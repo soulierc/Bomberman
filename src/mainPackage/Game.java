@@ -15,9 +15,13 @@ public class Game implements UserPolling{
 	private boolean started;
 	private final Configuration theConfiguration;
 	private boolean continuer;
-	private static final int TIME_BEFORE_DESTRUCTION = 4000;
+	private static final int TIME_BEFORE_DESTRUCTION = 60000;
 	private int countBombe;
 	
+	/*
+	 * Create a new game with the appropriate display, and according to the configuration given
+	 * 
+	 */
 	public Game(Display theDisplay, Configuration conf)
 	{
 		this.display = theDisplay;
@@ -61,7 +65,7 @@ public class Game implements UserPolling{
 			checkStateCases();
 			jouerIA();
 			
-			//Gere le temps restant pour la destruction du plateau
+			//Gere le temps restant avant la destruction du plateau
 			try {
 				Thread.sleep(10);
 				this.timeLeft-=10;
@@ -178,6 +182,7 @@ public class Game implements UserPolling{
 		
 		thePlayer = new Player(-1,-1,99999);
 		this.players.removeAll(this.players);
+		this.bombes.removeAll(this.bombes);
 		for(int i= 0; i<theConfiguration.getNB_PLAYERS()-1; i++)
 		{
 			this.players.add(new PlayerIA(-1,-1,i));
@@ -212,31 +217,7 @@ public class Game implements UserPolling{
 	}
 	@Override
 	public int deplacer(Direction d, Player p) {
-		if(!p.isDead())
-		{
-			int x=p.getHitBox().x;
-			int y=p.getHitBox().y;
-			switch (d)
-			{
-				case HAUT : y-= Case.DEFAULT_SIZE;break;
-				case BAS :  y+= Case.DEFAULT_SIZE;break;
-				case DROITE:  x+= Case.DEFAULT_SIZE;break;
-				case GAUCHE : x-= Case.DEFAULT_SIZE;break;
-			}
-			
-			Rectangle r = new Rectangle(x,y, Player.DEFAULT_SIZE,Player.DEFAULT_SIZE);
-			boolean canWalk = false;
-			for(int i =0;	i<this.cases.size() && !canWalk; 	i++)
-			{
-				canWalk = canWalk || (cases.get(i).getBox().intersects(r) && cases.get(i).canWalkOnIt()) ;
-			}
-			if(canWalk){
-				p.setHitBox(r);
-				return 1;
-			}
-			
-		}
-		return 0;
+			return p.deplacer(this, d);
 	}
 	@Override
 	public int poserBombe(Player p) {

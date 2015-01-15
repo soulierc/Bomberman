@@ -107,7 +107,12 @@ public class GameView extends View{
 			if(l.get(i).isDead())
 				g.setColor(Color.GRAY);
 			else
-				g.setColor(Color.blue);
+				if(l.get(i).getName() != 99999)
+					{
+						g.setColor(new Color(l.get(i).getName()*125,255,255));
+					}
+				else
+					g.setColor(Color.BLUE);
 			Rectangle t = null;
 			for(int j=0; j<l2.size(); j++) //La boucle sert a chercher sur quelle case se trouve le player i, on en a besoin pour centrer le player dans la case
 			{

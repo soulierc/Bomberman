@@ -86,4 +86,38 @@ public class Player {
 
 	public void jouer(Game g){}
 
+	
+	public int deplacer(Game g, Direction d) {
+		
+		if(d == null)
+			return 1;
+		
+		if(!this.isDead())
+		{
+			int x=this.getHitBox().x;
+			int y=this.getHitBox().y;
+			switch (d)
+			{
+				case HAUT : y-= Case.DEFAULT_SIZE;break;
+				case BAS :  y+= Case.DEFAULT_SIZE;break;
+				case DROITE:  x+= Case.DEFAULT_SIZE;break;
+				case GAUCHE : x-= Case.DEFAULT_SIZE;break;
+			}
+			
+			Rectangle r = new Rectangle(x,y, Player.DEFAULT_SIZE,Player.DEFAULT_SIZE);
+			boolean canWalk = false;
+			for(int i =0;	i<g.getCase().size() && !canWalk; 	i++)
+			{
+				canWalk = canWalk || (g.getCase().get(i).getBox().intersects(r) && g.getCase().get(i).canWalkOnIt()) ;
+			}
+			if(canWalk){
+				this.setHitBox(r);
+				return 1;
+			}
+			
+		}
+		return 0;
+	}
+	
+	
 }
