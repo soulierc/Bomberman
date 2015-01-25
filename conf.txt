@@ -1,6 +1,6 @@
 NBcasesOnLine : 18
 fullscreen : false
-nbPlayers : 4
+nbPlayers : 2
 case : [0,0,VIDE]
 case : [0,1,VIDE]
 case : [0,2,CAISSE]
@@ -39,7 +39,7 @@ case : [1,16,CAISSE]
 case : [1,17,VIDE]
 case : [2,0,CAISSE]
 case : [2,1,VIDE]
-case : [2,2,DEPART]
+case : [2,2,CAISSE]
 case : [2,3,VIDE]
 case : [2,4,CAISSE]
 case : [2,5,VIDE]
@@ -286,7 +286,7 @@ case : [15,11,CAISSE]
 case : [15,12,VIDE]
 case : [15,13,CAISSE]
 case : [15,14,VIDE]
-case : [15,15,DEPART]
+case : [15,15,CAISSE]
 case : [15,16,VIDE]
 case : [15,17,CAISSE]
 case : [16,0,VIDE]

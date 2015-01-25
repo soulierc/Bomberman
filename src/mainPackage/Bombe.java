@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Bombe {
 
-	private boolean posee;
 	private Rectangle position;
 	private int timeLeft;
 	private int portee;
@@ -15,16 +14,9 @@ public class Bombe {
 	public Bombe(Rectangle pos, Player owner, int time)
 	{
 		this.position = pos;
-		this.posee = false;
 		this.timeLeft = time;
 		this.portee = DEFAULT_PORTEE;
 		this.owner = owner;
-	}
-	public boolean isPosee() {
-		return posee;
-	}
-	public void setPosee(boolean posee) {
-		this.posee = posee;
 	}
 	public Rectangle getPosition() {
 		return position;

@@ -25,7 +25,7 @@ public class PlayerIA extends Player {
 			Bombe b = this.chercheBombeLaPlusProche(g.getBombes());
 			System.out.println("Bombe la plus proche :" + b);
 			//Si l'ordi est sur une case qui va etre detruite ... 
-			if(Tools.isPlayerOnCase(Tools.getCaseInExplosion(g.getCase(), b), this))
+			if(Tools.isPlayerOnCaseOf(Tools.getCaseInExplosion(g.getCase(), b), this))
 			{
 				fuirBombe(g,g.getCase(),b);
 				//deplacerAleatoire(g); // ... ON LE SORT DE LA !
@@ -33,18 +33,18 @@ public class PlayerIA extends Player {
 			}
 			else
 			{
-				deplacerVers(g,chercheEnnemiLePlusProche(g.getPlayers()));
+				deplacerVersJoueur(g,chercheEnnemiLePlusProche(g.getPlayers()));
 				if(this.getBombes() >= this.getMaxBombes() /2 && detruireautour(g.getCase()))
 					g.poserBombe(this);
 				System.out.println("\tJe suis n°" + this.getName());
 			}
-			try {
+			/*try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
-			this.timeBeforeAction = 300;
+			}*/
+			this.timeBeforeAction = 100;
 		}
 	}
 	
@@ -66,9 +66,9 @@ public class PlayerIA extends Player {
 			else if (bPos.y < this.getHitBox().y)
 				d2 = Direction.BAS;
 			
-			System.out.println(this.getName() +" : "+ d1 + "  " + d2);
+			//System.out.println(this.getName() +" : "+ d1 + "  " + d2);
 			if(d1 == null && d2 == null)
-				deplacerAleatoire(g);
+				deplacerAleatoire(g,b);
 			else
 			{
 				deplacer(g,d1);
@@ -78,11 +78,23 @@ public class PlayerIA extends Player {
 		}
 	}
 	
-	private void deplacerAleatoire(Game g) {
-		while(g.deplacer(Direction.values()[r.nextInt(4)], this)==0);
+	private void deplacerAleatoire(Game g, Bombe b) {
+		
+		Case[] cs = Tools.getCasesAdjacentToOneCase(g.getCase(), Tools.getCaseAt(g.getCase(),this.getHitBox().x, this.getHitBox().y));
+		boolean moved = false;
+		for(int i = 0; i < cs.length && !moved; i++ )
+		{
+			if( !Tools.isCaseInExplosion(g.getCase(),b,cs[i]) && cs[i].getEtat() != State.BOMBE && cs[i].canWalkOnIt()){
+				this.setHitBox(new Rectangle(cs[i].getBox().x, cs[i].getBox().y, Player.DEFAULT_SIZE,Player.DEFAULT_SIZE));
+				System.out.println(!Tools.isCaseInExplosion(g.getCase(),b,cs[i]));
+				moved = true;
+			}
+		}
+		if(!moved) //On a pas bouger c'est donc qu'on etait coincé pas des bombes, on bouge donc aléatoirement
+			while(deplacer(g, Direction.values()[r.nextInt(4)])==0);
 		
 	}
-
+	
 	private boolean detruireautour(List<Case> l)
 	{
 		if(Tools.getCaseAt(l, this.getHitBox().x+Case.DEFAULT_SIZE, this.getHitBox().y).getEtat() == State.CAISSE)
@@ -93,7 +105,12 @@ public class PlayerIA extends Player {
 			return false;
 	}
 	
-	private void deplacerVers(Game g, Player p)
+	/**
+	 * Deplace ce joueur d'une case vers le joueur p
+	 * @param g Le jeu courrant
+	 * @param p Le joueur cible
+	 */
+	private void deplacerVersJoueur(Game g, Player p)
 	{
 		Direction d1 = null;
 		Direction d2 = null;
@@ -119,6 +136,9 @@ public class PlayerIA extends Player {
 		}
 		if(d1!=null || d2!=null)
 		{
+			Case c1 = Tools.getCaseBeforeDeplacement(g.getCase(), p.getHitBox(), d1);
+			Case c2 = Tools.getCaseBeforeDeplacement(g.getCase(), p.getHitBox(), d2);
+			//PROBLEME ICI if(c1 != null && Tools.)
 			deplacer(g,d1);
 			deplacer(g,d2);
 		}
